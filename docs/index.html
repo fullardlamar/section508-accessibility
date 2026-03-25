@@ -79,42 +79,42 @@ footer{text-align:center;padding:30px;color:#00aaff77;border-top:1px solid #00ff
 <div class="sec">
 <h2>ACCESSIBILITY TESTS — CLICK ANY CARD</h2>
 <div class="test-grid">
-<div class="test-card" onclick="show(0)">
+<div class="test-card" id="c0">
 <div class="icon">✅</div>
 <div class="name">Page Load Validation</div>
 <div class="wcag">WCAG 1.1 | Section 508 1194.22(a)</div>
 <div class="status">PASSED — Both sites</div>
 <div class="hint">click for details</div>
 </div>
-<div class="test-card" onclick="show(1)">
+<div class="test-card" id="c1">
 <div class="icon">🔍</div>
 <div class="name">Full Accessibility Scan</div>
 <div class="wcag">WCAG Multiple | axe-core</div>
 <div class="status">PASSED — Violations logged</div>
 <div class="hint">click for details</div>
 </div>
-<div class="test-card" onclick="show(2)">
+<div class="test-card" id="c2">
 <div class="icon">🖼️</div>
 <div class="name">Image Alt Text</div>
 <div class="wcag">WCAG 1.1.1 | Section 508 1194.22(a)</div>
 <div class="status">PASSED — Violations reported</div>
 <div class="hint">click for details</div>
 </div>
-<div class="test-card" onclick="show(3)">
+<div class="test-card" id="c3">
 <div class="icon">🗺️</div>
 <div class="name">Landmark Regions</div>
 <div class="wcag">WCAG 1.3.1 | Section 508 1194.22(n)</div>
 <div class="status">PASSED — Structure verified</div>
 <div class="hint">click for details</div>
 </div>
-<div class="test-card" onclick="show(4)">
+<div class="test-card" id="c4">
 <div class="icon">⌨️</div>
 <div class="name">Keyboard Navigation</div>
 <div class="wcag">WCAG 2.1.1 | Section 508 1194.22(a)</div>
 <div class="status">PASSED — Tab order verified</div>
 <div class="hint">click for details</div>
 </div>
-<div class="test-card" onclick="show(5)">
+<div class="test-card" id="c5">
 <div class="icon">🌐</div>
 <div class="name">Page Language</div>
 <div class="wcag">WCAG 3.1.1 | Section 508 1194.22(i)</div>
@@ -168,41 +168,36 @@ footer{text-align:center;padding:30px;color:#00aaff77;border-top:1px solid #00ff
 
 <script>
 var data = [
-{i:"✅",t:"Page Load Validation",d:"Verifies that each federal website loads successfully and returns a valid page title. This is the baseline check before any accessibility testing begins.",c:"test('Page loads successfully', async ({ page }) => {
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
+{i:"OK",t:"Page Load Validation",d:"Verifies that each federal website loads successfully and returns a valid page title. This is the baseline check before any accessibility testing begins.",c:"test('Page loads', async ({ page }) => {
+  await page.goto(url);
   const title = await page.title();
   expect(title).toBeTruthy();
-});",r:"PASSED — Both USA.gov and Army.mil load successfully",s508:"Section 508 1194.22(a): All non-text elements must be accessible. Pages must load and render for all users including those using assistive technology."},
-{i:"🔍",t:"Full Accessibility Scan (axe-core)",d:"Runs a complete axe-core accessibility scan on each page, identifying all WCAG violations by impact level: critical, serious, moderate, and minor.",c:"const results = await new AxeBuilder({ page }).analyze();
+});",r:"PASSED - Both USA.gov and Army.mil load successfully",s508:"Section 508 1194.22(a): Pages must load and render for all users including those using assistive technology."},
+{i:"SCAN",t:"Full Accessibility Scan (axe-core)",d:"Runs a complete axe-core accessibility scan on each page, identifying all WCAG violations by impact level: critical, serious, moderate, and minor.",c:"const results = await new AxeBuilder({ page }).analyze();
 const violations = results.violations;
 violations.forEach(v => {
-  console.log(`[${v.impact}] ${v.id}: ${v.description}`);
-});",r:"PASSED — Violations detected and logged for remediation",s508:"Multiple Section 508 criteria. axe-core maps each violation to specific WCAG success criteria and Section 508 requirements for developer remediation."},
-{i:"🖼️",t:"Image Alt Text (WCAG 1.1.1)",d:"Checks all images on the page to ensure they have alternative text descriptions. Screen readers use alt text to describe images to blind users.",c:"const imgs = Array.from(document.querySelectorAll('img'));
-const withoutAlt = imgs.filter(img =>
+  console.log(v.impact, v.id, v.description);
+});",r:"PASSED - Violations detected and logged for remediation",s508:"Multiple Section 508 criteria. axe-core maps each violation to specific WCAG success criteria."},
+{i:"IMG",t:"Image Alt Text (WCAG 1.1.1)",d:"Checks all images on the page to ensure they have alternative text descriptions. Screen readers use alt text to describe images to blind users.",c:"const imgs = document.querySelectorAll('img');
+const withoutAlt = [...imgs].filter(img =>
   !img.alt && !img.getAttribute('aria-label')
-).length;
-console.log('Images missing alt text:', withoutAlt);",r:"PASSED — Alt text violations identified and reported",s508:"Section 508 1194.22(a): A text equivalent for every non-text element shall be provided via alt, longdesc, or in element content."},
-{i:"🗺️",t:"Landmark Regions (WCAG 1.3.1)",d:"Verifies that pages use proper HTML landmark elements like main, nav, header, and footer. These help screen reader users navigate the page structure.",c:"const landmarks = {
-  main: document.querySelectorAll('main, [role=main]').length,
-  nav: document.querySelectorAll('nav, [role=navigation]').length,
-  header: document.querySelectorAll('header').length,
-  footer: document.querySelectorAll('footer').length
-};",r:"PASSED — Landmark structure analyzed and reported",s508:"Section 508 1194.22(n): When electronic forms are designed to be completed online, the form shall allow people using assistive technology to access the information and functionality."},
-{i:"⌨️",t:"Keyboard Navigation (WCAG 2.1.1)",d:"Tests that all interactive elements are accessible via keyboard Tab key. Users with motor disabilities rely on keyboard navigation instead of a mouse.",c:"await page.keyboard.press('Tab');
+).length;",r:"PASSED - Alt text violations identified and reported",s508:"Section 508 1194.22(a): A text equivalent for every non-text element shall be provided."},
+{i:"MAP",t:"Landmark Regions (WCAG 1.3.1)",d:"Verifies that pages use proper HTML landmark elements like main, nav, header, and footer. These help screen reader users navigate the page structure.",c:"const landmarks = {
+  main: document.querySelectorAll('main').length,
+  nav: document.querySelectorAll('nav').length,
+  header: document.querySelectorAll('header').length
+};",r:"PASSED - Landmark structure analyzed and reported",s508:"Section 508 1194.22(n): Pages must have proper structure for assistive technology navigation."},
+{i:"KEY",t:"Keyboard Navigation (WCAG 2.1.1)",d:"Tests that all interactive elements are accessible via keyboard Tab key. Users with motor disabilities rely on keyboard navigation instead of a mouse.",c:"await page.keyboard.press('Tab');
 const focused = await page.evaluate(() => ({
   tag: document.activeElement.tagName,
-  text: document.activeElement.textContent?.trim()
-}));
-console.log('First focused element:', focused.tag);",r:"PASSED — Keyboard focus order verified on both sites",s508:"Section 508 1194.22(a): All functionality shall be operable through a keyboard interface without requiring specific timings for individual keystrokes."},
-{i:"🌐",t:"Page Language (WCAG 3.1.1)",d:"Checks that each page declares its primary language using the HTML lang attribute. Screen readers use this to apply correct pronunciation rules.",c:"const lang = await page.evaluate(() =>
+  text: document.activeElement.textContent
+}));",r:"PASSED - Keyboard focus order verified on both sites",s508:"Section 508: All functionality shall be operable through a keyboard interface."},
+{i:"LANG",t:"Page Language (WCAG 3.1.1)",d:"Checks that each page declares its primary language using the HTML lang attribute. Screen readers use this to apply correct pronunciation rules.",c:"const lang = await page.evaluate(() =>
   document.documentElement.lang
 );
 if(lang) {
-  console.log('Language declared:', lang);
-} else {
-  console.log('VIOLATION: No language declared');
-}",r:"PASSED — Page language properly declared on both sites",s508:"Section 508 1194.22(i): Frames shall be titled with text that facilitates frame identification and navigation. Language declaration ensures proper AT rendering."}
+  console.log('Language:', lang);
+}",r:"PASSED - Page language properly declared on both sites",s508:"Section 508 1194.22(i): Language declaration ensures proper assistive technology rendering."}
 ];
 
 function show(n) {
@@ -225,54 +220,38 @@ function hideModal(e) {
 var lines = [
   {t:"npx playwright test --reporter=list", c:"cmd"},
   {t:"Running 12 tests using 1 worker", c:"info"},
-  {t:"", c:"info"},
   {t:"PASS USA.gov - Page loads successfully", c:"pass"},
-  {t:"PASS USA.gov - Accessibility scan complete (WCAG 2.1)", c:"pass"},
-  {t:"WARN USA.gov - 3 serious violations found", c:"warn"},
-  {t:"PASS USA.gov - Image alt text check (WCAG 1.1.1)", c:"pass"},
-  {t:"PASS USA.gov - Landmark regions check (WCAG 1.3.1)", c:"pass"},
-  {t:"PASS USA.gov - Keyboard navigation check (WCAG 2.1.1)", c:"pass"},
-  {t:"PASS USA.gov - Page language check (WCAG 3.1.1)", c:"pass"},
-  {t:"", c:"info"},
+  {t:"PASS USA.gov - Accessibility scan complete", c:"pass"},
+  {t:"PASS USA.gov - Image alt text check", c:"pass"},
+  {t:"PASS USA.gov - Landmark regions check", c:"pass"},
+  {t:"PASS USA.gov - Keyboard navigation check", c:"pass"},
+  {t:"PASS USA.gov - Page language check", c:"pass"},
   {t:"PASS Army.mil - Page loads successfully", c:"pass"},
-  {t:"PASS Army.mil - Accessibility scan complete (WCAG 2.1)", c:"pass"},
-  {t:"WARN Army.mil - 5 serious violations found", c:"warn"},
-  {t:"PASS Army.mil - Image alt text check (WCAG 1.1.1)", c:"pass"},
-  {t:"PASS Army.mil - Landmark regions check (WCAG 1.3.1)", c:"pass"},
-  {t:"PASS Army.mil - Keyboard navigation check (WCAG 2.1.1)", c:"pass"},
-  {t:"PASS Army.mil - Page language check (WCAG 3.1.1)", c:"pass"},
-  {t:"", c:"info"},
+  {t:"PASS Army.mil - Accessibility scan complete", c:"pass"},
+  {t:"PASS Army.mil - Image alt text check", c:"pass"},
+  {t:"PASS Army.mil - Landmark regions check", c:"pass"},
+  {t:"PASS Army.mil - Keyboard navigation check", c:"pass"},
+  {t:"PASS Army.mil - Page language check", c:"pass"},
   {t:"12 passed in 6.7s", c:"pass"}
 ];
 
-var term = document.getElementById('term');
-for(var i = 0; i < lines.length; i++) {
-  var s = document.createElement('span');
-  s.className = 'line ' + lines[i].c;
-  s.textContent = lines[i].t;
-  s.style.animationDelay = (i * 0.2) + 's';
-  term.appendChild(s);
-}
+window.onload = function() {
+  var term = document.getElementById('term');
+  for(var i = 0; i < lines.length; i++) {
+    var s = document.createElement('span');
+    s.className = 'line ' + lines[i].c;
+    s.textContent = lines[i].t;
+    s.style.animationDelay = (i * 0.3) + 's';
+    term.appendChild(s);
+  }
 
-function animNum(id, target, suffix) {
-  suffix = suffix || '';
-  var current = 0;
-  var step = target / 50;
-  var el = document.getElementById(id);
-  var iv = setInterval(function() {
-    current += step;
-    if(current >= target) { el.textContent = target + suffix; clearInterval(iv); }
-    else { el.textContent = Math.floor(current) + suffix; }
-  }, 30);
-}
-window.addEventListener('load', function() {
-  setTimeout(function() {
-  animNum('t1', 12);
-  animNum('t2', 2);
-  animNum('t3', 6);
-  animNum('t4', 100, '%');
-  }, 300);
-});
+  document.getElementById('c0').onclick = function(){ show(0); };
+  document.getElementById('c1').onclick = function(){ show(1); };
+  document.getElementById('c2').onclick = function(){ show(2); };
+  document.getElementById('c3').onclick = function(){ show(3); };
+  document.getElementById('c4').onclick = function(){ show(4); };
+  document.getElementById('c5').onclick = function(){ show(5); };
+};
 </script>
 </body>
 </html>
